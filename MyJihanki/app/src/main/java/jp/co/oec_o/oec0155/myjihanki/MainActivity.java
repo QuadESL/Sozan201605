@@ -2,8 +2,7 @@ package jp.co.oec_o.oec0155.myjihanki;
 
 import android.content.ClipData;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.SoundPool;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.DragEvent;
@@ -92,17 +91,8 @@ public class MainActivity extends AppCompatActivity
     int kakaku1kingaku;
     int kakaku2kingaku;
     int kakaku3kingaku;
-    SoundPool sp;
-    int sound1;
-    int sound2;
-    @BindView(R.id.textView4)
-    TextView textView4;
-    @BindView(R.id.textView5)
-    TextView textView5;
-    @BindView(R.id.textView6)
-    TextView textView6;
-    @BindView(R.id.textView7)
-    TextView textView7;
+    MediaPlayer mp1;
+    MediaPlayer mp2;
 
 
     @Override
@@ -125,9 +115,8 @@ public class MainActivity extends AppCompatActivity
         kakaku2kingaku = Integer.parseInt((String) kakaku2.getText());
         // 商品３の価格を変数に格納
         kakaku3kingaku = Integer.parseInt((String) kakaku3.getText());
-        sp = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-        sound1 = sp.load(this, R.raw.hyun1, 1);
-        sound2 = sp.load(this, R.raw.touch1, 1);
+        mp1 = MediaPlayer.create(this, R.raw.hyun1);
+        mp2 = MediaPlayer.create(this, R.raw.touch1);
     }
 
     // 硬貨をタッチした時の処理。　ドラッグが開始される
@@ -182,7 +171,7 @@ public class MainActivity extends AppCompatActivity
             button3On();
         }
         // お金を投入した時の音を鳴らす
-        sp.play(sound1, 1.0f, 1.0f, 0, 0, 1.0f);
+        mp1.start();
     }
 
 
@@ -209,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         toridasiguti.setImageDrawable(syasin1.getDrawable());
         oturihyoji.setText(String.valueOf(oturikingaku));
         // 商品が出てくる音を鳴らす
-        sp.play(sound2, 1.0f, 1.0f, 0, 0, 1.0f);
+        mp2.start();
         buttonAllOff();
     }
 
@@ -221,7 +210,7 @@ public class MainActivity extends AppCompatActivity
         toridasiguti.setImageDrawable(syasin2.getDrawable());
         oturihyoji.setText(String.valueOf(oturikingaku));
         // 商品が出てくる音を鳴らす
-        sp.play(sound2, 1.0f, 1.0f, 0, 0, 1.0f);
+        mp2.start();
         buttonAllOff();
     }
 
@@ -233,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         toridasiguti.setImageDrawable(syasin3.getDrawable());
         oturihyoji.setText(String.valueOf(oturikingaku));
         // 商品が出てくる音を鳴らす
-        sp.play(sound2, 1.0f, 1.0f, 0, 0, 1.0f);
+        mp2.start();
         buttonAllOff();
     }
 
