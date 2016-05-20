@@ -18,40 +18,7 @@ import butterknife.OnTouch;
 
 public class MainActivity extends AppCompatActivity
         implements View.OnDragListener {
-    /*
-        @BindView(R.id.kouka500)
-        ImageView kouka500;
-        @BindView(R.id.kouka100)
-        ImageView kouka100;
-        @BindView(R.id.kouka10)
-        ImageView kouka10;
-        @BindView(R.id.syasin1)
-        ImageView syasin1;
-        @BindView(R.id.syasin2)
-        ImageView syasin2;
-        @BindView(R.id.syasin3)
-        ImageView syasin3;
-        @BindView(R.id.kakaku1)
-        TextView kakaku1;
-        @BindView(R.id.kakaku2)
-        TextView kakaku2;
-        @BindView(R.id.kakaku3)
-        TextView kakaku3;
-        @BindView(R.id.button1)
-        Button button1;
-        @BindView(R.id.button2)
-        Button button2;
-        @BindView(R.id.button3)
-        Button button3;
-        @BindView(R.id.toridasiguti)
-        ImageView toridasiguti;
-        @BindView(R.id.goukeihyoji)
-        TextView goukeihyoji;
-        @BindView(R.id.oturihyoji)
-        TextView oturihyoji;
-        @BindView(R.id.tonyuguti)
-        ImageView tonyuguti;
-    */
+
     @BindView(R.id.syasin1)
     ImageView syasin1;
     @BindView(R.id.kakaku1)
@@ -85,14 +52,22 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.kouka10)
     ImageView kouka10;
 
+    // 投入金額を入れる変数
     int tonyukingaku;
+    // 合計金額を入れる変数
     int goukeikingaku;
+    // おつりを入れる変数
     int oturikingaku;
+    // 商品１の価格を入れる変数
     int kakaku1kingaku;
+    // 商品２の価格を入れる変数
     int kakaku2kingaku;
+    // 商品３の価格をいれる変数
     int kakaku3kingaku;
-    MediaPlayer mp1;
-    MediaPlayer mp2;
+    // お金を入れた時の音
+    MediaPlayer sound1;
+    // 商品が出る時の音
+    MediaPlayer sound2;
 
 
     @Override
@@ -104,50 +79,59 @@ public class MainActivity extends AppCompatActivity
         syokiSyori();
     }
 
-    /*
-    *  初期処理
-     */
+    // プログラムがスタートした時に最初に行う処理
     public void syokiSyori() {
+        //　ボタンを全てオフにして押せなくする
         buttonAllOff();
-        // 商品１の価格を変数に格納
+        // 商品１、２，３の価格を変数に格納
         kakaku1kingaku = Integer.parseInt((String) kakaku1.getText());
-        // 商品２の価格を変数に格納
         kakaku2kingaku = Integer.parseInt((String) kakaku2.getText());
-        // 商品３の価格を変数に格納
         kakaku3kingaku = Integer.parseInt((String) kakaku3.getText());
-        mp1 = MediaPlayer.create(this, R.raw.hyun1);
-        mp2 = MediaPlayer.create(this, R.raw.touch1);
+        // 音を出す準備
+        sound1 = MediaPlayer.create(this, R.raw.hyun1);
+        sound2 = MediaPlayer.create(this, R.raw.touch1);
     }
 
-    // 硬貨をタッチした時の処理。　ドラッグが開始される
-    @OnTouch({R.id.kouka500, R.id.kouka100, R.id.kouka10})
-    public boolean touchKouka(ImageView img) {
-        String text = "";
-        if (img == kouka500) {
-            text = "500";
-        } else if (img == kouka100) {
-            text = "100";
-        } else if (img == kouka10) {
-            text = "10";
-        }
-        ClipData clipData = ClipData.newPlainText("kouka", text);
+    // ボタンを全てオフにする
+    private void buttonAllOff() {
+        button1.setEnabled(false);
+        button1.setBackgroundColor(Color.GRAY);
+        button2.setEnabled(false);
+        button2.setBackgroundColor(Color.GRAY);
+        button3.setEnabled(false);
+        button3.setBackgroundColor(Color.GRAY);
+    }
+
+    // 500円硬貨をタッチした時の処理。　ドラッグが開始される
+    @OnTouch(R.id.kouka500)
+    public boolean touchKouka500(ImageView img) {
+        ClipData clipData = ClipData.newPlainText("kouka", "500");
         img.startDrag(clipData, new View.DragShadowBuilder(img), (Object) img, 0);
         return true;
     }
-
-    // 取り出し口をタッチした時の処理、　商品が消えて、おつりが消える
-    @OnTouch(R.id.toridasiguti)
-    public boolean touchToridasi(ImageView img) {
-        toridasiguti.setImageDrawable(null);
-        oturihyoji.setText("");
+    // 100円硬貨をタッチした時の処理。　ドラッグが開始される
+    @OnTouch( R.id.kouka100)
+    public boolean touchKouka100(ImageView img) {
+        ClipData clipData = ClipData.newPlainText("kouka", "100");
+        img.startDrag(clipData, new View.DragShadowBuilder(img), (Object) img, 0);
+        return true;
+    }
+    // 10円硬貨をタッチした時の処理。　ドラッグが開始される
+    @OnTouch( R.id.kouka10)
+    public boolean touchKouka10(ImageView img) {
+        ClipData clipData = ClipData.newPlainText("kouka", "10");
+        img.startDrag(clipData, new View.DragShadowBuilder(img), (Object) img, 0);
         return true;
     }
 
     // 硬貨をドロップした時の処理
     @Override
     public boolean onDrag(View v, DragEvent event) {
+        // ドロップした時
         if (event.getAction() == DragEvent.ACTION_DROP) {
+            // ドロップした先が投入口だったら
             if (v == tonyuguti) {
+                // クリップデータを取り出して、投入金額変数に数字に変換してセットする
                 ClipData clipData = event.getClipData();
                 ClipData.Item item = clipData.getItemAt(0);
                 tonyukingaku = Integer.parseInt((String) item.getText());
@@ -171,60 +155,10 @@ public class MainActivity extends AppCompatActivity
             button3On();
         }
         // お金を投入した時の音を鳴らす
-        mp1.start();
+        sound1.start();
     }
 
 
-    @OnClick({R.id.button1, R.id.button2, R.id.button3})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button1:
-                btn1Syori();
-                break;
-            case R.id.button2:
-                btn2Syori();
-                break;
-            case R.id.button3:
-                btn3Syori();
-                break;
-        }
-    }
-
-    /**
-     * ボタン１が押された時の処理
-     */
-    public void btn1Syori() {
-        oturikingaku = goukeikingaku - kakaku1kingaku;
-        toridasiguti.setImageDrawable(syasin1.getDrawable());
-        oturihyoji.setText(String.valueOf(oturikingaku));
-        // 商品が出てくる音を鳴らす
-        mp2.start();
-        buttonAllOff();
-    }
-
-    /**
-     * ボタン２が押された時の処理
-     */
-    public void btn2Syori() {
-        oturikingaku = goukeikingaku - kakaku2kingaku;
-        toridasiguti.setImageDrawable(syasin2.getDrawable());
-        oturihyoji.setText(String.valueOf(oturikingaku));
-        // 商品が出てくる音を鳴らす
-        mp2.start();
-        buttonAllOff();
-    }
-
-    /**
-     * ボタン３が押された時の処理
-     */
-    public void btn3Syori() {
-        oturikingaku = goukeikingaku - kakaku3kingaku;
-        toridasiguti.setImageDrawable(syasin3.getDrawable());
-        oturihyoji.setText(String.valueOf(oturikingaku));
-        // 商品が出てくる音を鳴らす
-        mp2.start();
-        buttonAllOff();
-    }
 
     // ボタン１をＯＮにする処理
     private void button1On() {
@@ -244,16 +178,49 @@ public class MainActivity extends AppCompatActivity
         button3.setBackgroundColor(Color.MAGENTA);
     }
 
-    // ボタンをオールＯＦＦにする処理
-    private void buttonAllOff() {
-        button1.setEnabled(false);
-        button1.setBackgroundColor(Color.GRAY);
-        button2.setEnabled(false);
-        button2.setBackgroundColor(Color.GRAY);
-        button3.setEnabled(false);
-        button3.setBackgroundColor(Color.GRAY);
-        goukeihyoji.setText("");
+
+
+    // ボタン１が押された時の処理
+    @OnClick(R.id.button1)
+    public void onClick1() {
+        oturikingaku = goukeikingaku - kakaku1kingaku;
+        toridasiguti.setImageDrawable(syasin1.getDrawable());
+        oturihyoji.setText(String.valueOf(oturikingaku));
+        buttonAllOff();
+        // 商品が出てくる音を鳴らす
+        sound2.start();
+    }
+
+     // ボタン２が押された時の処理
+    @OnClick(R.id.button2)
+    public void onClick2() {
+        oturikingaku = goukeikingaku - kakaku2kingaku;
+        toridasiguti.setImageDrawable(syasin2.getDrawable());
+        oturihyoji.setText(String.valueOf(oturikingaku));
+        buttonAllOff();
+        // 商品が出てくる音を鳴らす
+        sound2.start();
+    }
+
+     // ボタン３が押された時の処理
+    @OnClick(R.id.button3)
+    public void onClick3() {
+        oturikingaku = goukeikingaku - kakaku3kingaku;
+        toridasiguti.setImageDrawable(syasin3.getDrawable());
+        oturihyoji.setText(String.valueOf(oturikingaku));
+        buttonAllOff();
+        // 商品が出てくる音を鳴らす
+        sound2.start();
+    }
+
+    // 取り出し口をタッチした時の処理、　商品が消えて、おつりが消える
+    @OnClick(R.id.toridasiguti)
+    public void onClick() {
+        toridasiguti.setImageDrawable(null);
         goukeikingaku = 0;
+        goukeihyoji.setText("");
+        oturikingaku = 0;
+        oturihyoji.setText("");
     }
 
 
